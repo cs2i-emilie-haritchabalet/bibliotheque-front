@@ -16,22 +16,14 @@ COPY . .
 RUN npm run build
 
 # Runtime stage
-FROM node:20-alpine
+FROM nginx:alpine
 
-WORKDIR /app
-
-# Installer un serveur HTTP simple
-RUN npm install -g http-server
+# Copier la config nginx
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copier les fichiers construits depuis le stage de build
-COPY --from=build /app/dist/bibliotheque-front ./dist
-
-# Créer un utilisateur non-root
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001
-
-USER nextjs
+COPY --from=build /app/dist/bibliotheque-front /usr/share/nginx/html
 
 EXPOSE 4200
 
-CMD ["http-server", "./dist", "-p", "4200", "--cors"]
+CMD ["nginx", "-g", "daemon off;"]
