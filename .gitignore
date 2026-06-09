@@ -1,1 +1,35 @@
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+dist/
+build/
+.angular/
+
+# Environment variables (ne pas committer les fichiers .env personnels)
+.env
+.env.local
+.env.*.local
+# .env.example doit être committé!
+
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+coverage/
+playwright-report/
+test-results/
+.nyc_output/
+
+tmp/
+temp/
+*.tmp
+
+Thumbs.db
+.DS_Store
