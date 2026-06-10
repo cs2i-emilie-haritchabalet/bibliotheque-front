@@ -26,4 +26,6 @@ COPY --from=build /app/dist/bibliotheque-front /usr/share/nginx/html
 
 EXPOSE 4200
 
+USER nginx
+
 CMD ["nginx", "-g", "daemon off;"]
