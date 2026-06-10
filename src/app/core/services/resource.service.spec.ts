@@ -1,84 +1,77 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ResourceService } from './resource.service';
+import { Ressource, RessourceCreateRequest } from '../models/models';
+import { environment } from '../../../environments/environment';
 
 describe('ResourceService', () => {
   let service: ResourceService;
   let httpMock: HttpTestingController;
 
+  const mockRessource: Ressource = {
+    id: 1,
+    titre: 'Angular avancé',
+    auteur: 'John Doe',
+    anneePublication: 2023,
+    theme: 'Informatique'
+  } as Ressource;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [ResourceService],
+      providers: [ResourceService]
     });
 
     service = TestBed.inject(ResourceService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
-  afterEach(() => {
-    httpMock.verify();
-  });
+  afterEach(() => httpMock.verify());
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should fetch resources', () => {
-    const mockResources = [
-      { id: 1, title: 'Book 1', type: 'BOOK' },
-      { id: 2, title: 'Magazine 1', type: 'MAGAZINE' },
-    ];
+  it('should search resources with criteria', () => {
+    const criteria = { titre: 'Angular', auteur: null, anneePublication: null, theme: null };
 
-    service.getResources().subscribe(resources => {
-      expect(resources.length).toBe(2);
-      expect(resources[0].title).toBe('Book 1');
+    service.search(criteria).subscribe(results => {
+      expect(results.length).toBe(1);
+      expect(results[0].titre).toContain('Angular');
     });
 
-    const req = httpMock.expectOne('/api/resources');
-    expect(req.request.method).toBe('GET');
-    req.flush(mockResources);
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/ressources/advanced-search`);
+    expect(req.request.method).toBe('POST');
+    req.flush([mockRessource]);
   });
 
-  it('should search resources', () => {
-    const searchTerm = 'Angular';
-    const mockResults = [
-      { id: 1, title: 'Angular Guide', type: 'BOOK' },
-    ];
+  it('should get resource by id', () => {
+    const resourceId = 1;
 
-    service.search(searchTerm).subscribe(results => {
-      expect(results.length).toBe(1);
-      expect(results[0].title).toContain('Angular');
+    service.getById(resourceId).subscribe(resource => {
+      expect(resource).toEqual(mockRessource);
     });
 
-    const req = httpMock.expectOne(`/api/resources/search?q=${searchTerm}`);
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/ressources/${resourceId}`);
     expect(req.request.method).toBe('GET');
-    req.flush(mockResults);
+    req.flush(mockRessource);
   });
 
   it('should create a resource', () => {
-    const newResource = { title: 'New Book', type: 'BOOK', author: 'Author' };
-    const mockResponse = { id: 1, ...newResource };
+    const newResource: RessourceCreateRequest = {
+      titre: 'Angular avancé',
+      auteur: 'John Doe',
+      anneePublication: 2023,
+      theme: 'Informatique'
+    } as RessourceCreateRequest;
 
-    service.createResource(newResource).subscribe(resource => {
-      expect(resource.id).toBe(1);
-      expect(resource.title).toBe('New Book');
+    service.create(newResource).subscribe(resource => {
+      expect(resource).toEqual(mockRessource);
     });
 
-    const req = httpMock.expectOne('/api/resources');
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/ressources`);
     expect(req.request.method).toBe('POST');
-    req.flush(mockResponse);
-  });
-
-  it('should delete a resource', () => {
-    const resourceId = 1;
-
-    service.deleteResource(resourceId).subscribe(() => {
-      expect(true).toBeTruthy();
-    });
-
-    const req = httpMock.expectOne(`/api/resources/${resourceId}`);
-    expect(req.request.method).toBe('DELETE');
-    req.flush({});
+    expect(req.request.body).toEqual(newResource);
+    req.flush(mockRessource);
   });
 });
