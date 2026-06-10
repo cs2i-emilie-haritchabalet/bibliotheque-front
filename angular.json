@@ -58,12 +58,12 @@
         "test": {
           "builder": "@angular/build:karma",
           "options": {
-            "karmaConfig": "karma.conf.js",
             "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "assets": [{ "glob": "**/*", "input": "public" }],
             "styles": ["src/styles.css"],
-            "codeCoverage": true
+            "codeCoverage": true,
+            "browsers": "ChromeHeadlessCI"
           }
         }
       }
