@@ -1,5 +1,11 @@
 module.exports = function (config) {
   config.set({
+    plugins: [
+      require('karma-jasmine'),
+      require('karma-chrome-launcher'),
+      require('karma-jasmine-html-reporter'),
+      require('karma-coverage')
+    ],
     coverageReporter: {
       dir: require('path').join(__dirname, './coverage/bibliotheque-front'),
       subdir: '.',
@@ -10,6 +16,7 @@ module.exports = function (config) {
         { type: 'json' }
       ]
     },
+    browsers: ['ChromeHeadlessCI'],
     customLaunchers: {
       ChromeHeadlessCI: {
         base: 'ChromeHeadless',
