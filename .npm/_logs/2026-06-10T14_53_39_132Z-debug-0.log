@@ -5,9 +5,9 @@
 4 silly config load:file:C:\Users\Emili\Downloads\bibliotheque-front-angular\bibliotheque-front-angular\.npmrc
 5 silly config load:file:C:\Users\Emili\.npmrc
 6 silly config load:file:C:\nvm4w\nodejs\etc\npmrc
-7 verbose title npm run dev
-8 verbose argv "run" "dev"
-9 verbose logfile logs-max:10 dir:C:\Users\Emili\Downloads\bibliotheque-front-angular\bibliotheque-front-angular\.npm\_logs\2026-06-09T13_22_03_990Z-
-10 verbose logfile C:\Users\Emili\Downloads\bibliotheque-front-angular\bibliotheque-front-angular\.npm\_logs\2026-06-09T13_22_03_990Z-debug-0.log
+7 verbose title npm run e2e
+8 verbose argv "run" "e2e"
+9 verbose logfile logs-max:10 dir:C:\Users\Emili\Downloads\bibliotheque-front-angular\bibliotheque-front-angular\.npm\_logs\2026-06-10T14_53_39_132Z-
+10 verbose logfile C:\Users\Emili\Downloads\bibliotheque-front-angular\bibliotheque-front-angular\.npm\_logs\2026-06-10T14_53_39_132Z-debug-0.log
 11 silly logfile start cleaning logs, removing 1 files
 12 silly logfile done cleaning log files

@@ -34,7 +34,9 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'npm start',
+    command: process.env.CI
+      ? 'npx serve -s dist/bibliotheque-front/browser -l 4200'
+      : 'npm start',
     url: 'http://localhost:4200',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,

@@ -95,10 +95,11 @@ e2e-tests:
 
   before_script:
     - npm ci --cache .npm --prefer-offline
+    - npm install -g serve
 
   script:
     - npm run build
-    - npm run e2e
+    - CI=true npm run e2e
 
   artifacts:
     when: always
