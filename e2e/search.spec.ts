@@ -40,8 +40,8 @@ test.describe('Search Functionality', () => {
   });
 
   test('should display no results message', async ({ page }) => {
-    // Mock retournant liste vide pour cette recherche
-    await page.route('**/api/ressources/search**', async (route) => {
+    // Override le mock pour retourner liste vide
+    await page.route('**/api/ressources/advanced-search', async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',

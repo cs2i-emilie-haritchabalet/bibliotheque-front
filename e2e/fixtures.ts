@@ -1,7 +1,6 @@
 import { Page } from '@playwright/test';
 
 export async function mockApi(page: Page) {
-  // Mock login
   await page.route('**/api/auth/login', async (route) => {
     const body = route.request().postDataJSON();
     if (body?.email === 'alice@etu.fr' && body?.motDePasse === 'alice123') {
@@ -11,9 +10,9 @@ export async function mockApi(page: Page) {
         body: JSON.stringify({
           id: 1,
           email: 'alice@etu.fr',
-          nom: 'Alice',
-          prenom: 'Dupont',
-          role: 'UTILISATEUR'
+          nomComplet: 'Alice Dupont', 
+          role: 'UTILISATEUR',
+          type: 'ETUDIANT'
         })
       });
     } else if (body?.email === 'admin@biblio.fr' && body?.motDePasse === 'admin123') {
@@ -23,9 +22,9 @@ export async function mockApi(page: Page) {
         body: JSON.stringify({
           id: 2,
           email: 'admin@biblio.fr',
-          nom: 'Admin',
-          prenom: 'Biblio',
-          role: 'BIBLIOTHECAIRE'
+          nomComplet: 'Admin Biblio',  
+          role: 'BIBLIOTHECAIRE',
+          type: 'BIBLIOTHECAIRE'
         })
       });
     } else {
@@ -37,8 +36,7 @@ export async function mockApi(page: Page) {
     }
   });
 
-  // Mock recherche ressources
-  await page.route('**/api/ressources/search**', async (route) => {
+  await page.route('**/api/ressources/advanced-search', async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -53,9 +51,7 @@ export async function mockApi(page: Page) {
           cautionExigee: 5.0,
           emplacement: 'A1',
           referenceSpecifique: '978-0132350884',
-          exemplaires: [
-            { id: 1, codeBarres: 'EX001', statut: 'DISPONIBLE' }
-          ]
+          exemplaires: [{ id: 1, codeBarres: 'EX001', statut: 'DISPONIBLE' }]
         },
         {
           id: 2,
@@ -67,16 +63,13 @@ export async function mockApi(page: Page) {
           cautionExigee: 5.0,
           emplacement: 'A2',
           referenceSpecifique: '978-0201633610',
-          exemplaires: [
-            { id: 2, codeBarres: 'EX002', statut: 'DISPONIBLE' }
-          ]
+          exemplaires: [{ id: 2, codeBarres: 'EX002', statut: 'DISPONIBLE' }]
         }
       ])
     });
   });
 
-  // Mock détail ressource
-  await page.route('**/api/ressources/**', async (route) => {
+  await page.route(/\/api\/ressources\/\d+$/, async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -90,23 +83,20 @@ export async function mockApi(page: Page) {
         cautionExigee: 5.0,
         emplacement: 'A1',
         referenceSpecifique: '978-0132350884',
-        exemplaires: [
-          { id: 1, codeBarres: 'EX001', statut: 'DISPONIBLE' }
-        ]
+        exemplaires: [{ id: 1, codeBarres: 'EX001', statut: 'DISPONIBLE' }]
       })
     });
   });
 
-  // Mock création ressource
   await page.route('**/api/ressources', async (route) => {
     if (route.request().method() === 'POST') {
       await route.fulfill({
         status: 201,
         contentType: 'application/json',
-        body: JSON.stringify({ id: 99, message: 'Ressource ajoutée.' })
+        body: JSON.stringify({ id: 99 })
       });
     } else {
-      route.continue();
+      await route.continue();
     }
   });
 }
