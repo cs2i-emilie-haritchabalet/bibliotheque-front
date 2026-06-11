@@ -1,7 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { mockApi } from './fixtures';
 
 test.describe('Authentication', () => {
   test.beforeEach(async ({ page }) => {
+    await mockApi(page);
     await page.goto('/');
     await page.waitForSelector('app-login');
   });
@@ -15,6 +17,14 @@ test.describe('Authentication', () => {
     await page.fill('input[type="password"]', 'alice123');
     await page.click('button[type="submit"]');
     await expect(page).toHaveURL(/.*recherche/, { timeout: 10000 });
+  });
+
+  test('should show error for invalid credentials', async ({ page }) => {
+    await page.fill('input[type="email"]', 'invalid@example.com');
+    await page.fill('input[type="password"]', 'wrongpassword');
+    await page.click('button[type="submit"]');
+    await expect(page.locator('button[type="submit"]')).not.toBeDisabled({ timeout: 10000 });
+    await expect(page.locator('.error')).toBeVisible({ timeout: 5000 });
   });
 
   test('should logout successfully', async ({ page }) => {

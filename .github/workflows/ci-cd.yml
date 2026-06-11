@@ -61,27 +61,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-test
 
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_DB: bibliotheque
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
-      mailpit:
-        image: axllent/mailpit:latest
-        ports:
-          - 1025:1025
-          - 8025:8025
-
     steps:
       - uses: actions/checkout@v4
 
@@ -100,15 +79,10 @@ jobs:
       - name: Build application
         run: npm run build
 
-      - name: Install serve
-        run: npm install -g serve
-
       - name: Run E2E tests
         run: npm run e2e
         env:
           CI: true
-          # ✅ si ton backend a besoin de variables d'environnement :
-          # DATABASE_URL: postgresql://postgres:postgres@localhost:5432/bibliotheque
 
       - name: Upload E2E test results
         uses: actions/upload-artifact@v4

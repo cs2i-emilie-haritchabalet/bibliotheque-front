@@ -83,23 +83,8 @@ e2e-tests:
         POSTGRES_DB: bibliotheque
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
-
     - name: axllent/mailpit:latest
       alias: mailpit
-
-    # Backend Spring Boot
-    - name: registry.gitlab.com/bibliotheque1221924/back:latest
-      alias: backend
-      variables:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/bibliotheque
-        SPRING_DATASOURCE_USERNAME: postgres
-        SPRING_DATASOURCE_PASSWORD: postgres
-        SPRING_MAIL_HOST: mailpit
-        SPRING_MAIL_PORT: "1025"
-        SPRING_PROFILES_ACTIVE: docker
-
-  variables:
-    BACKEND_URL: http://backend:8080
 
   cache:
     paths:
@@ -109,21 +94,10 @@ e2e-tests:
 
   before_script:
     - npm ci --cache .npm --prefer-offline
-    # Attendre que le backend soit prêt
-    - |
-      echo "Waiting for backend..."
-      timeout 90 sh -c '
-        until wget -q --spider http://backend:8080/actuator/health 2>&1 | grep -q "401\|200"; do
-          echo "Backend not ready, retrying..."
-          sleep 3
-        done
-      '
-      echo "Backend ready!"
+    - npm install -g serve
 
   script:
     - npm run build
-    - CI=true node scripts/ci-server.mjs &
-    - sleep 3
     - CI=true npm run e2e
 
   artifacts:
