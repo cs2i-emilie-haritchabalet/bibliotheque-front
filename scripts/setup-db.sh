@@ -12,7 +12,7 @@ until PGPASSWORD=$POSTGRES_PASSWORD psql -h postgres -U postgres -c '\l' > /dev/
   sleep 1
 done
 
-echo "✅ PostgreSQL is ready"
+echo "PostgreSQL is ready"
 
 # Créer la base de données de test si elle n'existe pas
 PGPASSWORD=$POSTGRES_PASSWORD psql -h postgres -U postgres -c "CREATE DATABASE bibliotheque_test;" || echo "Database already exists"
@@ -20,4 +20,4 @@ PGPASSWORD=$POSTGRES_PASSWORD psql -h postgres -U postgres -c "CREATE DATABASE b
 # (Optionnel) Importer un schema SQL
 # PGPASSWORD=$POSTGRES_PASSWORD psql -h postgres -U postgres -d bibliotheque_test < /scripts/schema.sql
 
-echo "✅ Test database setup complete"
+echo "Test database setup complete"

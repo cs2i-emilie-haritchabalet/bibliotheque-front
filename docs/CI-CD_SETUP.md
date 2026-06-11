@@ -1,6 +1,6 @@
 # CI/CD Setup - GitHub Actions & GitLab CI/CD
 
-## 🔄 GitHub Actions
+## GitHub Actions
 
 ### Configuration
 - **Fichier**: `.github/workflows/ci-cd.yml`
@@ -8,7 +8,7 @@
 
 ### Stages
 
-#### 1️⃣ Build and Test
+#### Build and Test
 ```yaml
 - Installe les dépendances
 - Build l'application
@@ -16,27 +16,27 @@
 - Upload la couverture à Codecov
 ```
 
-#### 2️⃣ E2E Tests
+#### E2E Tests
 ```yaml
 - Lance les services (PostgreSQL, Mailpit)
 - Exécute les tests Playwright
 - Génère les rapports Playwright
 ```
 
-#### 3️⃣ Security
+#### Security
 ```yaml
 - npm audit pour les vulnérabilités
 - Snyk scan (si token configuré)
 ```
 
-#### 4️⃣ Docker Build
+#### Docker Build
 ```yaml
 - Build l'image Docker
 - Push vers ghcr.io
 - S'exécute uniquement sur main/develop
 ```
 
-#### 5️⃣ Container Security
+#### Container Security
 ```yaml
 - Scan Trivy de l'image
 - Upload vers GitHub Security
@@ -96,7 +96,7 @@ container-scan:
 
 ---
 
-## 📊 GitLab CI/CD
+## GitLab CI/CD
 
 ### Configuration
 - **Fichier**: `.gitlab-ci.yml`
@@ -104,14 +104,14 @@ container-scan:
 
 ### Stages
 
-#### 📦 Build
+#### Build
 ```yaml
 - Installe npm
 - Build l'application
 - Cache les dépendances
 ```
 
-#### 🧪 Test
+#### Test
 ```yaml
 Unit Tests:
   - Exécute Karma + Jasmine
@@ -123,7 +123,7 @@ E2E Tests:
   - Exécute les tests
 ```
 
-#### 🔒 Security
+#### Security
 ```yaml
 npm-audit:
   - Vérification des dépendances
@@ -132,7 +132,7 @@ semgrep-sast:
   - Analyse statique du code
 ```
 
-#### 🐳 Image
+#### Image
 ```yaml
 docker-build:
   - Build et push vers le registre
@@ -142,7 +142,7 @@ trivy-scan:
   - Scan de vulnérabilités
 ```
 
-#### 🚀 Deploy
+#### Deploy
 ```yaml
 deploy-staging:
   - Déploie sur staging
@@ -193,7 +193,7 @@ DOCKER_TLS_CERTDIR      = (vide)
 
 ---
 
-## 🔄 Flux de travail typique
+## Flux de travail typique
 
 ### Pour une branche `feature`
 
@@ -233,14 +233,14 @@ graph LR
     C --> D{Succès?}
     D -->|Oui| E[Docker Build]
     E --> F[Container Scan]
-    F --> G[🔒 Manual Approval]
+    F --> G[Manual Approval]
     G --> H[Deploy Production]
-    D -->|Non| I[⛔ Blocked]
+    D -->|Non| I[Blocked]
 ```
 
 ---
 
-## 📋 Checklist avant Push
+## Checklist avant Push
 
 - [ ] Les tests unitaires passent: `npm test`
 - [ ] Les tests E2E passent: `npm run e2e`
@@ -283,7 +283,7 @@ CI=true npm run e2e
 
 ---
 
-## 📞 Support et Documentation
+## Support et Documentation
 
 - [GitHub Actions Docs](https://docs.github.com/en/actions)
 - [GitLab CI/CD Docs](https://docs.gitlab.com/ee/ci/)

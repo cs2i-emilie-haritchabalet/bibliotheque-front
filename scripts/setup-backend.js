@@ -41,7 +41,7 @@ async function setupBackend() {
   const backendPath = await askQuestion('Backend path: ');
 
   if (!backendPath.trim()) {
-    console.error('❌ Backend path cannot be empty');
+    console.error('Backend path cannot be empty');
     rl.close();
     return;
   }
@@ -53,7 +53,7 @@ async function setupBackend() {
 
   // For validation, just check if it's a reasonable path
   if (!backendPath.includes(':') && !backendPath.includes('/')) {
-    console.error('❌ Invalid path format. Use absolute path with forward slashes.');
+    console.error('Invalid path format. Use absolute path with forward slashes.');
     rl.close();
     return;
   }
@@ -79,15 +79,15 @@ SPRING_PROFILES_ACTIVE=docker
 
   // Write .env file
   fs.writeFileSync(envPath, envContent);
-  console.log(`\n✅ .env file created successfully!`);
-  console.log(`📁 Backend path: ${backendPath}`);
-  console.log('\n✨ Ready to run: npm run docker:up\n');
+  console.log(`\n.env file created successfully!`);
+  console.log(`Backend path: ${backendPath}`);
+  console.log('\nReady to run: npm run docker:up\n');
 
   rl.close();
 }
 
 setupBackend().catch(err => {
-  console.error('❌ Error:', err.message);
+  console.error('Error:', err.message);
   rl.close();
   process.exit(1);
 });

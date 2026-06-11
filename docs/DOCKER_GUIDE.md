@@ -1,6 +1,6 @@
 # Docker & Docker Compose Guide
 
-## 🐳 Structure Docker
+## Structure Docker
 
 ### Production (docker-compose.yml)
 - Frontend Angular (servi via http-server)
@@ -13,7 +13,7 @@
 - PostgreSQL
 - Mailpit
 
-## 📦 Dockerfile Frontend
+## Dockerfile Frontend
 
 ```dockerfile
 FROM node:20-alpine AS build
@@ -36,7 +36,7 @@ CMD ["http-server", "./dist", "-p", "4200", "--cors"]
 1. **Build**: Compile Angular
 2. **Runtime**: Serve les fichiers statiques
 
-## 🚀 Démarrage rapide
+## Démarrage rapide
 
 ### Production - Tout en un
 ```bash
@@ -60,7 +60,7 @@ npm install
 npm start
 ```
 
-## 📋 Commandes utiles
+## Commandes utiles
 
 ### Gestion des services
 ```bash
@@ -146,7 +146,7 @@ backend:
     - MY_VAR=value
 ```
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Port déjà en utilisation
 ```bash
@@ -190,7 +190,7 @@ docker volume prune
 docker system prune -a --volumes
 ```
 
-## 📊 Monitoring
+## Monitoring
 
 ### Ressources
 ```bash
@@ -211,7 +211,7 @@ healthcheck:
   start_period: 40s
 ```
 
-## 🔐 Sécurité
+## Sécurité
 
 ### User non-root
 ```dockerfile
@@ -236,7 +236,7 @@ trivy image bibliotheque-front:latest
 snyk test --docker bibliotheque-front:latest
 ```
 
-## 📈 Performance
+## Performance
 
 ### Build optimisé
 ```dockerfile
@@ -267,7 +267,7 @@ networks:
     driver: bridge
 ```
 
-## 🚀 Déploiement
+## Déploiement
 
 ### Registry Docker
 ```bash
@@ -288,7 +288,7 @@ docker tag bibliotheque-front myusername/bibliotheque-front:1.0.0
 docker push myusername/bibliotheque-front:1.0.0
 ```
 
-## 📚 Ressources
+## Ressources
 
 - [Docker Docs](https://docs.docker.com)
 - [Docker Compose Docs](https://docs.docker.com/compose)

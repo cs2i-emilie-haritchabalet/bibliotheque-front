@@ -1,65 +1,117 @@
-# Bibliothèque universitaire - Front Angular
+# Bibliothèque Universitaire - Frontend Angular
 
-Frontend Angular généré pour le backend Spring Boot fourni précédemment.
+Application frontend Angular pour gérer une bibliothèque universitaire : recherche de ressources, emprunts, gestion des utilisateurs.
 
-## Fonctionnalités couvertes
+## Démarrage rapide (2 minutes)
 
-- écran de connexion
-- recherche simple et avancée de ressources
-- détail d'une ressource
-- page "Mes emprunts" avec retour
-- création d'un utilisateur (bibliothécaire)
-- ajout d'une ressource (bibliothécaire)
-- suivi des retards et envoi des relances (bibliothécaire)
-- protection des routes selon authentification et rôle
+### Prérequis
+- **Node.js** 20+ et **npm** 10+
+- **Docker** et **Docker Compose** v20+
 
-## Choix techniques
-
-- Angular 21
-- composants standalone
-- Router Angular
-- HttpClient + interceptor pour l'authentification HTTP Basic
-- formulaires réactifs
-
-## Démarrage
-
-### 1. Lancer le backend
-
-Le backend Spring Boot doit tourner sur `http://localhost:8080`.
-
-### 2. Installer les dépendances
+### Lancer l'application
 
 ```bash
-npm install
+npm run setup
 ```
 
-### 3. Lancer Angular
+C'est tout! Le script va:
+- Demander le chemin de votre backend Java (une seule fois)
+- Installer les dépendances npm
+- Lancer les conteneurs Docker (PostgreSQL, Backend, Frontend)
 
+### Accédez à l'application
+
+```
+Frontend:    http://localhost:4200
+Backend:     http://localhost:8080
+PostgreSQL:  localhost:5432
+Mailpit:     http://localhost:8025 (emails)
+```
+
+### Comptes de démo
+
+| Rôle | Email | Mot de passe |
+|------|-------|--------------|
+| Bibliothécaire | `admin@biblio.fr` | `admin123` |
+| Utilisateur | `alice@etu.fr` | `alice123` |
+
+---
+
+## Fonctionnalités
+
+- Authentification avec HTTP Basic
+- Recherche simple et avancée de ressources
+- Détail des ressources
+- Gestion des emprunts ("Mes emprunts")
+- Inscription d'utilisateurs (rôle bibliothécaire)
+- Création de ressources (rôle bibliothécaire)  
+- Suivi des retards et relances (rôle bibliothécaire)
+- Protection des routes par rôle
+
+---
+
+## Stack technique
+
+- **Angular 21** (composants standalone)
+- **Router Angular** pour la navigation
+- **HttpClient + interceptor** pour l'authentification
+- **Formulaires réactifs** (Reactive Forms)
+- **Playwright** pour les tests E2E
+- **Docker Compose** pour l'orchestration
+
+---
+
+## Documentation
+
+| Document | Pour qui | Contenu |
+|----------|----------|---------|
+| [docs/SETUP.md](docs/SETUP.md) | Développeurs | Setup complet, configuration manuelle, dépannage |
+| [docs/CI-CD_SETUP.md](docs/CI-CD_SETUP.md) | DevOps | GitHub Actions, GitLab CI/CD, déploiement |
+| [docs/UNIT_TESTING.md](docs/UNIT_TESTING.md) | Testeurs | Tests unitaires et configuration |
+| [docs/E2E_TESTING.md](docs/E2E_TESTING.md) | Testeurs | Tests E2E avec Playwright |
+| [docs/DOCKER_GUIDE.md](docs/DOCKER_GUIDE.md) | DevOps | Docker, Docker Compose, commandes utiles |
+
+---
+
+## Cas courants
+
+### `npm run setup` a échoué?
+→ Voir [docs/SETUP.md](docs/SETUP.md#troubleshooting)
+
+### Le backend ne se lance pas?
+→ Vérifier le `.env` avec `BACKEND_PATH` correct
 ```bash
-npm start
+cat .env  # Affiche la configuration
 ```
 
-L'application sera disponible sur `http://localhost:4200`.
+### Port 4200 déjà utilisé?
+```bash
+# Lancer sur un autre port
+npm start -- --port 4201
+```
 
-Le fichier `proxy.conf.json` redirige `/api` vers `http://localhost:8080`, ce qui évite un problème CORS en développement.
+### Tester l'application?
+```bash
+npm test              # Tests unitaires
+npm run e2e          # Tests E2E
+npm run e2e:ui       # Avec interface
+```
 
-## Comptes de démo
+### Arrêter l'application?
+```bash
+npm run docker:down
+```
 
-- Bibliothécaire : `admin@biblio.fr` / `admin123`
-- Utilisateur : `alice@etu.fr` / `alice123`
+### Redémarrer proprement?
+```bash
+npm run docker:clean
+```
 
-## Correspondance avec le rapport
+---
 
-Le frontend couvre les écrans listés dans la section IHM du rapport : connexion, recherche, détail ressource, mes emprunts, inscription utilisateur, ajout de ressource, suivi des retards et relances.
+## Notes
 
-## Ajustements utiles du rapport
-
-- préciser que l'authentification côté front repose sur HTTP Basic, cohérente avec l'implémentation backend actuelle
-- remplacer la mention générique des maquettes Angular par la structure réelle des pages et composants
-- ajouter la notion de garde de routes et d'interceptor HTTP dans la partie architecture frontend
-
-## Remarques
-
-- Ce frontend est volontairement simple et pédagogique.
-- Il est prévu pour fonctionner avec le backend déjà généré, sans JWT.
-- Pour une version plus aboutie, on pourrait ajouter pagination, tri, filtres dynamiques, notifications visuelles et tests Angular.
+- Ce frontend est volontairement **simple et pédagogique**
+- Il fonctionne avec le backend Spring Boot fourni
+- L'authentification utilise **HTTP Basic** (sans JWT)
+- Les tests sont présents : unitaires (Jasmine/Karma) et E2E (Playwright)

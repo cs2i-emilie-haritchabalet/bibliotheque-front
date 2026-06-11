@@ -1,5 +1,57 @@
 # 📋 CHANGELOG
 
+## [Unreleased] - Documentation Update
+
+### 📚 Documentation
+
+#### Refactoring & Consolidation
+- ✅ **Rewritten README.md** - Point d'entrée unique et clair
+  - Démarrage rapide avec `npm run setup`
+  - Comptes de démo
+  - Index de documentation
+
+- ✅ **Created SETUP.md** - Guide installation complet
+  - Consolidation de FIRST_SETUP + README-SETUP + BACKEND_PATH_GUIDE
+  - Instructions étape par étape
+  - Troubleshooting détaillé
+
+- ✅ **Created DOC_INDEX.md** - Navigation de documentation
+  - Index clair de tous les documents
+  - Cas d'usage courants
+
+- ✅ **Created DOC_CHANGES.md** - Summary of documentation changes
+  - Explique les changements et la nouvelle structure
+
+- ✅ **Archived obsolete docs** with `_ARCHIVED_` prefix
+  - `_ARCHIVED_FIRST_SETUP.md` (Makefile inexistant)
+  - `_ARCHIVED_QUICK_START.md`
+  - `_ARCHIVED_README-SETUP.md`
+  - `_ARCHIVED_BACKEND_PATH_GUIDE.md`
+
+- ✅ **Centralized docs/** folder
+  - Moved all documentation to `docs/` folder
+  - Created `docs/README.md` as documentation index
+  - Created `docs/_ARCHIVED/` for obsolete documents
+
+#### Bug Fixes
+- 🔧 **Fixed references to `make` command** (Makefile doesn't exist)
+  - Replaced `make setup` → `npm run setup`
+  - Replaced `make setup-backend` → `npm run setup:backend`
+  - Replaced `make restart` → `npm run docker:restart`
+  - Updated BACKEND_CONFIG_SUMMARY.md (removed references to obsolete scripts)
+  - Fixed broken link in CONTRIBUTING.md
+
+- 🗑️ **Deleted obsolete setup shell scripts**
+  - Removed `setup-backend.ps1` (was duplicating npm run setup:backend)
+  - Removed `setup-backend.sh` (was duplicating npm run setup:backend)
+  - Both scripts contained references to non-existent `make setup` command
+
+#### Created/Updated
+- ✅ **.env.example** - Template de configuration
+- ✅ **CORRECTIONS_NOTES.md** - Documentation complète des corrections appliquées
+
+---
+
 ## [1.0.0] - 2025-01-15
 
 ### 🎉 Ajouts

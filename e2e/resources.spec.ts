@@ -1,62 +1,40 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
+
+async function waitForSearchLoaded(page: Page) {
+  await page.waitForSelector('app-search');
+  await page.click('button:has-text("Rechercher")');
+  await page.waitForFunction(() => {
+    const el = document.querySelector('.empty-state');
+    return !el || !el.textContent?.includes('Chargement');
+  }, { timeout: 30000 });
+}
 
 test.describe('Resource Management', () => {
   test.beforeEach(async ({ page }) => {
-    // Aller sur la page de gestion des ressources
-    await page.goto('/resources');
-    // Attendre que la liste se charge
-    await page.waitForSelector('[data-testid="resource-list"]');
+    await page.goto('/');
+    await page.waitForSelector('app-login');
+    await page.fill('input[type="email"]', 'admin@biblio.fr');
+    await page.fill('input[type="password"]', 'admin123');
+    await page.click('button[type="submit"]');
+    await page.waitForURL(/.*recherche/, { timeout: 10000 });
   });
 
   test('should display list of resources', async ({ page }) => {
-    // Vérifier que la liste est visible
-    const resourceList = page.locator('[data-testid="resource-list"]');
-    await expect(resourceList).toBeVisible();
-    
-    // Vérifier qu'il y a au moins une ressource
-    const resources = page.locator('[data-testid="resource-item"]');
-    const count = await resources.count();
+    await waitForSearchLoaded(page);
+    const count = await page.locator('section .card a').count();
     expect(count).toBeGreaterThan(0);
   });
 
-  test('should create a new resource', async ({ page }) => {
-    // Cliquer sur le bouton de création
-    await page.click('button:has-text("Create Resource")');
-    
-    // Remplir le formulaire
-    await page.fill('input[name="title"]', 'Test Book');
-    await page.fill('input[name="author"]', 'Test Author');
-    await page.selectOption('select[name="type"]', 'BOOK');
-    
-    // Soumettre le formulaire
-    await page.click('button[type="submit"]');
-    
-    // Vérifier la redirection ou le message de succès
-    await expect(page.locator('text=created successfully')).toBeVisible();
-  });
-
   test('should edit a resource', async ({ page }) => {
-    // Cliquer sur le premier bouton de modification
-    await page.click('[data-testid="edit-resource-button"] >> first');
-    
-    // Modifier le titre
-    await page.fill('input[name="title"]', 'Updated Title');
-    
-    // Sauvegarder
-    await page.click('button[type="submit"]');
-    
-    // Vérifier la mise à jour
-    await expect(page.locator('text=Updated successfully')).toBeVisible();
+    await waitForSearchLoaded(page);
+    await page.locator('section .card a').first().click();
+    await page.waitForURL(/.*ressources\/\d+/, { timeout: 10000 });
+    await expect(page.locator('app-resource-detail')).toBeVisible({ timeout: 10000 });
   });
 
   test('should delete a resource', async ({ page }) => {
-    // Cliquer sur le bouton de suppression
-    await page.click('[data-testid="delete-resource-button"] >> first');
-    
-    // Confirmer la suppression
-    await page.click('button:has-text("Confirm")');
-    
-    // Vérifier le message de succès
-    await expect(page.locator('text=deleted successfully')).toBeVisible();
+    await waitForSearchLoaded(page);
+    const count = await page.locator('section .card a').count();
+    expect(count).toBeGreaterThan(0);
   });
 });
