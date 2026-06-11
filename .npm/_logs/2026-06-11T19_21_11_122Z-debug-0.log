@@ -7,13 +7,7 @@
 6 silly config load:file:C:\nvm4w\nodejs\etc\npmrc
 7 verbose title npm run e2e
 8 verbose argv "run" "e2e"
-9 verbose logfile logs-max:10 dir:C:\Users\Emili\Downloads\bibliotheque-front-angular\bibliotheque-front-angular\.npm\_logs\2026-06-11T10_16_03_781Z-
-10 verbose logfile C:\Users\Emili\Downloads\bibliotheque-front-angular\bibliotheque-front-angular\.npm\_logs\2026-06-11T10_16_03_781Z-debug-0.log
+9 verbose logfile logs-max:10 dir:C:\Users\Emili\Downloads\bibliotheque-front-angular\bibliotheque-front-angular\.npm\_logs\2026-06-11T19_21_11_122Z-
+10 verbose logfile C:\Users\Emili\Downloads\bibliotheque-front-angular\bibliotheque-front-angular\.npm\_logs\2026-06-11T19_21_11_122Z-debug-0.log
 11 silly logfile start cleaning logs, removing 1 files
 12 silly logfile done cleaning log files
-13 verbose cwd C:\Users\Emili\Downloads\bibliotheque-front-angular\bibliotheque-front-angular
-14 verbose os Windows_NT 10.0.26200
-15 verbose node v22.21.0
-16 verbose npm  v11.16.0
-17 verbose exit 0
-18 info ok
