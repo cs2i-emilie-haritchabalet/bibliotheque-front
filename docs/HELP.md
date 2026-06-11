@@ -2,9 +2,7 @@
 
 ---
 
-## Démarrage Ultra-Rapide
-
-**C'est votre première fois?**
+## Démarrage Rapide
 
 ```bash
 npm run setup
