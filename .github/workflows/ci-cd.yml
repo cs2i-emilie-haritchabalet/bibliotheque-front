@@ -186,6 +186,9 @@ jobs:
           output: 'trivy-results.sarif'
           severity: 'HIGH,CRITICAL'
           exit-code: '0'
+        env:
+          TRIVY_USERNAME: ${{ github.actor }}
+          TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Trivy results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v4
