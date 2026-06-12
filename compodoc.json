@@ -1,0 +1,7 @@
+{
+  "tsconfig": "tsconfig.doc.json",
+  "output": "docs-site",
+  "name": "Bibliothèque Universitaire - Documentation",
+  "includes": "docs",
+  "includesName": "Guides additionnels"
+}

@@ -25,7 +25,8 @@
     "dev:down": "docker-compose -f docker-compose.dev.yml down",
     "stop": "npm run docker:down",
     "audit": "npm audit --audit-level=moderate",
-    "clean": "rm -rf dist coverage .angular"
+    "clean": "rm -rf dist coverage .angular",
+    "docs": "compodoc -p tsconfig.doc.json -d docs-site -c compodoc.json"
   },
   "dependencies": {
     "@angular/animations": "^21.0.0",
@@ -44,6 +45,7 @@
     "@angular/cli": "^21.0.0",
     "@angular/compiler-cli": "^21.0.0",
     "@angular/platform-browser-dynamic": "^21.2.5",
+    "@compodoc/compodoc": "^1.2.1",
     "@playwright/test": "^1.60.0",
     "@types/jasmine": "^5.1.0",
     "jasmine-core": "^5.1.1",

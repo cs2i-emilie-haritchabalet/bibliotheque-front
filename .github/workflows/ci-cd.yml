@@ -16,29 +16,29 @@ jobs:
   # ─────────────────────────────────────────────
   build-and-test:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [20.x]
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Build application
         run: npm run build
-      
+
       - name: Run unit tests
         run: npm test
-      
+
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
         if: always()
@@ -46,7 +46,7 @@ jobs:
           files: ./coverage/lcov.info
           flags: unittests
           name: codecov-umbrella
-      
+
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
@@ -98,23 +98,23 @@ jobs:
   security:
     runs-on: ubuntu-latest
     needs: build-and-test
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run npm audit
         run: npm audit --audit-level=critical
         continue-on-error: true
-      
+
       - name: Run Snyk security scan
         uses: snyk/actions/node@master
         env:
@@ -178,7 +178,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run Trivy vulnerability scanner
+      - name: Run Trivy vulnerability scanner (report)
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}

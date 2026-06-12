@@ -1,0 +1,34 @@
+[
+  {
+    "title": "BACKEND_CONFIG_SUMMARY",
+    "file": "BACKEND_CONFIG_SUMMARY.md"
+  },
+  {
+    "title": "CI-CD_SETUP",
+    "file": "CI-CD_SETUP.md"
+  },
+  {
+    "title": "DOCKER_GUIDE",
+    "file": "DOCKER_GUIDE.md"
+  },
+  {
+    "title": "E2E_TESTING",
+    "file": "E2E_TESTING.md"
+  },
+  {
+    "title": "HELP",
+    "file": "HELP.md"
+  },
+  {
+    "title": "index",
+    "file": "index.md"
+  },
+  {
+    "title": "SETUP",
+    "file": "SETUP.md"
+  },
+   {
+    "title": "UNIT_TESTING",
+    "file": "UNIT_TESTING.md"
+  }
+]

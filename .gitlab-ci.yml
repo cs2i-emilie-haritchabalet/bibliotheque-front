@@ -215,6 +215,45 @@ trivy-scan:
     - develop
 
 # ─────────────────────────────────────────────
+# Docs
+# ─────────────────────────────────────────────
+docs:
+  stage: build
+  image: node:${NODE_VERSION}-alpine
+
+  cache:
+    paths:
+      - node_modules/
+      - .npm/
+    policy: pull
+
+  needs:
+    - build-test
+
+  script:
+    - npm ci --cache .npm --prefer-offline
+    - npm run docs
+
+  artifacts:
+    paths:
+      - docs-site/
+    expire_in: 30 days
+
+  only:
+    - main
+    
+pages:
+  stage: deploy
+  needs:
+    - docs
+  script:
+    - mv docs-site/ public/
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
+# ─────────────────────────────────────────────
 # DEPLOYMENT (Optional)
 # ─────────────────────────────────────────────
 
