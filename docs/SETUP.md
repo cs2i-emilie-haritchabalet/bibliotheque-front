@@ -51,92 +51,11 @@ docker-compose --version   # Doit être v20+
 
 ### Backend Java
 
-Le backend Spring Boot doit être cloné sur votre machine.
+Le backend est fourni directement sous forme d’image Docker :
 
 ```bash
 # Vérifier que le backend existe
-ls ../bibliotheque-back-java/   # Ou votre chemin vers le backend
-```
-
----
-
-## Configuration (Fichier `.env`)
-
-### Qu'est-ce que `.env`?
-
-Le fichier `.env` contient le **chemin vers le backend Java**. 
-
-**Structure attendue:**
-```ini
-BACKEND_PATH=C:/Users/Emili/Downloads/bibliotheque-back-java
-```
-
-### Créer ou mettre à jour `.env`
-
-**Option 1: Laisser le script `setup.js` le faire**
-
-```bash
-npm run setup
-```
-
-Vous serez invité à donner le chemin du backend.
-
-**Option 2: Créer manuellement**
-
-```bash
-# Copier le template
-cp .env.example .env
-```
-
-Puis éditer `.env` et adapter le chemin:
-
-```ini
-BACKEND_PATH=C:/chemin/vers/bibliotheque-back-java
-```
-
-### Comment trouver le bon chemin?
-
-#### Cas 1: Backend au même niveau que le frontend
-
-**Votre structure:**
-```
-Downloads/
-├── bibliotheque-front-angular/     ← Vous êtes ici
-│   ├── package.json
-│   └── docker-compose.yml
-└── bibliotheque-back-java/         ← Backend
-    ├── pom.xml
-    └── Dockerfile
-```
-
-**Chemin à utiliser:**
-```ini
-BACKEND_PATH=../bibliotheque-back-java
-```
-
-#### Cas 2: Backend à un autre endroit
-
-Trouvez le chemin absolu:
-
-**Windows (PowerShell):**
-```powershell
-cd C:\Users\Emili\Downloads\bibliotheque-back-java
-pwd  # Affiche le chemin absolu
-# C:\Users\Emili\Downloads\bibliotheque-back-java
-
-# Remplacer les backslashes par des slashes:
-# C:/Users/Emili/Downloads/bibliotheque-back-java
-```
-
-**Mac/Linux:**
-```bash
-cd /Users/emili/Downloads/bibliotheque-back-java
-pwd  # Affiche le chemin
-```
-
-**Mettre à jour `.env`:**
-```ini
-BACKEND_PATH=C:/Users/Emili/Downloads/bibliotheque-back-java
+image: bibliotheque-backend:latest
 ```
 
 ---
@@ -150,32 +69,10 @@ git clone https://github.com/your-org/bibliotheque-front-angular.git
 cd bibliotheque-front-angular
 ```
 
-### Étape 2: Configurer le backend
+### Étape 2: 
 
 ```bash
-npm run setup:backend
-```
-
-Vous serez demandé d'entrer le chemin vers le backend Java.
-
-**Exemple:**
-```
-Entrez le chemin vers le backend (format avec slashes):
-C:/Users/Emili/Downloads/bibliotheque-back-java
-```
-
-Le fichier `.env` sera créé automatiquement.
-
-### Étape 3: Installer les dépendances
-
-```bash
-npm install
-```
-
-### Étape 4: Lancer les conteneurs
-
-```bash
-npm run docker:up
+npm run setup
 ```
 
 Cela va démarrer:
@@ -184,11 +81,7 @@ Cela va démarrer:
 - **PostgreSQL**: localhost:5432
 - **Mailpit** (emails): http://localhost:8025
 
-### Étape 5: Lancer le serveur de développement
-
-```bash
-npm start
-```
+### Étape 3: 
 
 Ouvrez: **http://localhost:4200**
 
@@ -240,12 +133,7 @@ npm start -- --port 4201
 docker ps  # Doit afficher les conteneurs
 ```
 
-2. Le `.env` est correct?
-```bash
-cat .env   # Affiche le contenu
-```
-
-3. Reconstruire les images:
+2. Reconstruire les images:
 ```bash
 npm run docker:rebuild
 ```
@@ -279,15 +167,12 @@ Voir [E2E_TESTING.md](E2E_TESTING.md) pour plus de détails.
 
 ### Le backend Spring Boot ne démarre pas
 
-1. Vérifier que Maven compile le backend:
 ```bash
-cd ../bibliotheque-back-java
-./mvnw clean install  # Ou: mvn clean install
-```
+# Vérifier les conteneurs
+docker ps
 
-2. Vérifier les logs Docker:
-```bash
-docker logs bibliotheque-back-java
+# Voir les logs backend
+docker logs bibliotheque-backend
 ```
 
 ### npm run setup échoue
@@ -295,14 +180,9 @@ docker logs bibliotheque-back-java
 **Essayer manuellement:**
 
 ```bash
-# 1. Créer .env
-node scripts/setup-backend.js
-
-# 2. Installer les dépendances
-npm install
-
-# 3. Lancer Docker
-npm run docker:up
+# Rebuild images si nécessaire
+docker-compose build --no-cache
+docker-compose up -d
 ```
 
 ---
@@ -322,8 +202,7 @@ npm run docker:up
 │   └── main.ts
 ├── e2e/                  # Tests E2E Playwright
 ├── scripts/
-│   ├── setup.js          # Script de setup principal
-│   └── setup-backend.js  # Configuration du backend
+│   └── setup.js          # Script de setup principal
 ├── docker-compose.yml    # Orchestration (prod/dev)
 ├── Dockerfile           # Image Docker frontend
 ├── karma.conf.js        # Config tests unitaires
@@ -331,28 +210,6 @@ npm run docker:up
 ├── package.json         # Dépendances et scripts
 ├── .env.example         # Template .env
 └── angular.json         # Config Angular
-```
-
----
-
-## Mode développement vs production
-
-### Mode développement (recommandé)
-
-```bash
-npm run dev
-```
-
-Cela lance:
-- Angular dev server avec hot reload
-- Services support (PostgreSQL, Mailpit)
-
-### Mode production
-
-```bash
-npm run build           # Build l'application
-docker build -t my-app .  # Créer l'image
-docker run -p 4200:4200 my-app  # Lancer
 ```
 
 ---

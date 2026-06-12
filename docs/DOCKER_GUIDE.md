@@ -3,13 +3,13 @@
 ## Structure Docker
 
 ### Production (docker-compose.yml)
-- Frontend Angular (servi via http-server)
+- Frontend Angular (servi via Nginx)
 - Backend Spring Boot
 - PostgreSQL
 - Mailpit
 
 ### Développement (docker-compose.dev.yml)
-- Backend Spring Boot avec hot reload
+- Backend Spring Boot (image Docker)
 - PostgreSQL
 - Mailpit
 
@@ -17,24 +17,26 @@
 
 ```dockerfile
 FROM node:20-alpine AS build
+
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM node:20-alpine
-WORKDIR /app
-RUN npm install -g http-server
-COPY --from=build /app/dist/bibliotheque-front ./dist
-USER nextjs
-EXPOSE 4200
-CMD ["http-server", "./dist", "-p", "4200", "--cors"]
+FROM nginx:alpine
+
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY --from=build /app/dist/bibliotheque-front/browser /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
 ```
 
 **Stages:**
 1. **Build**: Compile Angular
-2. **Runtime**: Serve les fichiers statiques
+2. **Runtime**: Serve les fichiers Angular via Nginx
 
 ## Démarrage rapide
 
@@ -45,18 +47,14 @@ docker-compose up -d
 ```
 
 URLs:
-- Frontend: http://localhost:4200
+- Frontend: http://localhost:4200 (Nginx en conteneur sur port 80)
 - Backend: http://localhost:8080
 - Mailpit: http://localhost:8025
 - PostgreSQL: localhost:5432
 
-### Développement - Sans frontend en conteneur
+### Développement
 ```bash
-# Lancer seulement le backend + services
 docker-compose -f docker-compose.dev.yml up -d
-
-# Dans un autre terminal, le frontend localement
-npm install
 npm start
 ```
 
@@ -127,23 +125,24 @@ Modifier dans `docker-compose.yml`:
 services:
   frontend:
     ports:
-      - "3000:4200"  # Local:Container
+      - "4200:80"
 ```
 
 ### Base de données
+
 ```yaml
 postgres:
   environment:
-    POSTGRES_DB: my_database
-    POSTGRES_PASSWORD: my_password
+    POSTGRES_DB: bibliotheque
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
 ```
 
-### Variables
-```yaml
+### Backend image
+
+```YAMl
 backend:
-  environment:
-    - SPRING_PROFILES_ACTIVE=production
-    - MY_VAR=value
+  image: ghcr.io/<user>/bibliotheque-backend:latest
 ```
 
 ## Troubleshooting
@@ -241,7 +240,7 @@ snyk test --docker bibliotheque-front:latest
 ### Build optimisé
 ```dockerfile
 # Cache layers
-RUN npm ci --only=production
+RUN npm ci
 
 # Multi-stage
 FROM node AS build
@@ -265,27 +264,6 @@ FROM node:20-alpine  # ~170MB vs ~1GB
 networks:
   bibliotheque-network:
     driver: bridge
-```
-
-## Déploiement
-
-### Registry Docker
-```bash
-# Tag l'image
-docker tag bibliotheque-front:latest ghcr.io/owner/bibliotheque-front:1.0.0
-
-# Push
-docker push ghcr.io/owner/bibliotheque-front:1.0.0
-```
-
-### Docker Hub
-```bash
-# Login
-docker login
-
-# Tag et push
-docker tag bibliotheque-front myusername/bibliotheque-front:1.0.0
-docker push myusername/bibliotheque-front:1.0.0
 ```
 
 ## Ressources

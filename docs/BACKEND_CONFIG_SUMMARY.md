@@ -1,221 +1,176 @@
-# Résumé de la Configuration - Chemin Backend
+   # Résumé de la Configuration - Chemin Backend
 
-## Configuration du Backend
+   ## Configuration du Backend
 
-### Chemin configuré
+   Le backend est fourni sous forme d'image Docker :
 
-**Fichier: `.env`**
-```ini
-BACKEND_PATH=C:/Users/Emili/OneDrive/Bureau/CDA/JAVA/TP/bibliotheque
-```
+   bibliotheque-backend:latest
 
-**Format**: Windows avec slashes `/` (pas de backslashes `\`)
+   ---
 
----
+   ## Utilisation
 
-## Utilisation
+   ### Option 1: Démarrage standard (recommandé)
+   ```bash
+   docker-compose up -d
+   ``` 
 
-### Option 1: Script automatisé (Recommandé)
+   ### Option 2: Rebuild complet (si besoin)
 
-```bash
-# Windows (PowerShell)
-.\setup-backend.ps1
+   ```bash
+   docker-compose build --no-cache
+   docker-compose up -d
+   ```
 
-# Mac/Linux
-./setup-backend.sh
-```
+   ### Option 3: Mode développement
 
-Le script demande le chemin et crée automatiquement `.env`.
+   ```bash
+   docker-compose -f docker-compose.dev.yml up -d
+   ```
 
-### Option 2: Via npm (Alternative)
+   ---
 
-```bash
-npm run setup:backend
-```
+   ## Flux de fonctionnement
 
-Lance le script setup-backend.js (qui s'adapte à votre système).
+   ```
+   1. Utilisateur exécute: npm run setup
+      ↓
+   2. npm install installe les dépendances frontend
+      ↓
+   3. docker-compose up démarre les services
+      ↓  
+   4. Docker pull l’image backend (GHCR ou local)
+      ↓
+   5. PostgreSQL + Mailpit démarrent
+      ↓
+   6. Backend Spring Boot démarre automatiquement
+      ↓
+   7. Frontend Angular se connecte au backend
+      ↓
+   8. Application prête
+   ```
 
-### Option 3: Manuel
+   ---
 
-```bash
-# 1. Copier le template
-cp .env.example .env
+   ## Checklist pour les contributeurs
 
-# 2. Éditer .env et adapter BACKEND_PATH
-notepad .env
+   ### Pour la première fois
 
-# 3. Vérifier
-cat .env | grep BACKEND_PATH
-```
+   - [ ] `git clone` le repo
+   - [ ] `cd bibliotheque-front-angular/bibliotheque-front-angular`
+   - [ ] `npm run setup`
+   - [ ] Attendrele démarrage Docker
+   - [ ] Accéder à http://localhost:4200
 
----
+   ### Important à savoir
 
-## Flux de fonctionnement
+   - **Committer**: `.env.example`, `docker-compose.yml`, `package.json`, `scripts/setup.js`
+   - **NE PAS committer**: `.env` (personnel à chaque machine)
 
-```
-1. Utilisateur exécute: npm run setup
-   ↓
-2. setup.js vérifie si .env existe
-   ↓
-3. Si absent → propose: npm run setup:backend
-   ↓
-4. Script crée .env avec BACKEND_PATH
-   ↓
-5. npm install installe les dépendances
-   ↓
-6. npm run docker:up lance docker-compose
-   ↓
-7. docker-compose lit les variables de .env
-   ↓
-8. Backend build depuis C:/Users/Emili/OneDrive/Bureau/CDA/JAVA/TP/bibliotheque
-   ↓
-9. Application démarre!
-```
+   ### Si quelqu'un ajoute une variable
 
----
+   ```bash
+   # Ajouter la nouvelle variable dans .env.example
+   vim .env.example
 
-## Checklist pour les contributeurs
+   # Git add/commit
+   git add .env.example
+   git commit -m "docs: add new env variable"
 
-### Pour la première fois
+   # Les autres devront l'ajouter dans leur .env
+   ```
 
-- [ ] `git clone` le repo
-- [ ] `cd bibliotheque-front-angular/bibliotheque-front-angular`
-- [ ] `npm run setup` (exécute setup:backend si besoin + npm install + docker:up)
-- [ ] Attendre 2-5 minutes
-- [ ] Accéder à http://localhost:4200
+   ---
 
-### Important à savoir
+   ## Comment ça marche?
 
-- **Committer**: `.env.example`, `docker-compose.yml`, `package.json`, `scripts/setup.js`, `setup-backend.*`
-- **NE PAS committer**: `.env` (personnel à chaque machine)
+   ### Variables d'environnement
 
-### Si quelqu'un ajoute une variable
+   **`.env` (local)**
+   ```ini
+   FRONTEND_PORT=4200
+   BACKEND_PORT=8080
+   ```
 
-```bash
-# Ajouter la nouvelle variable dans .env.example
-vim .env.example
+   **`docker-compose.yml` (utilise les variables)**
+   ```yaml
+   frontend:
+      ports:
+         - "4200:80"
 
-# Git add/commit
-git add .env.example
-git commit -m "docs: add new env variable"
+   backend:
+      ports:
+         - "8080:8080"
 
-# Les autres devront l'ajouter dans leur .env
-```
+   postgres:
+      ports:
+         - "5432:5432"
+   ```
 
----
+   ---
 
-## Comment ça marche?
+   ## Cas d'usage avancés
 
-### Variables d'environnement
+   ### Changer les ports
+ 
+   ```bash
+   docker-compose up -d
+   ```
+   (et modifier docker-compose si besoin)
 
-**`.env` (local)**
-```ini
-BACKEND_PATH=C:/Users/Emili/OneDrive/Bureau/CDA/JAVA/TP/bibliotheque
-FRONTEND_PORT=4200
-BACKEND_PORT=8080
-```
+   ### Utiliser une autre version du backend
 
-**`docker-compose.yml` (utilise les variables)**
-```yaml
-backend:
-  build:
-    context: ${BACKEND_PATH:-./../bibliotheque-back-java}  # Lit depuis .env
-  ports:
-    - "${BACKEND_PORT:-8080}:8080"  # Utilise la variable
+   Dans docker-compose.yml : 
+   ```YAML
+   backend:
+      image: ghcr.io/<user>/bibliotheque-backend:1.0.0
+   ```
 
-frontend:
-  ports:
-    - "${FRONTEND_PORT:-4200}:4200"  # Valeur par défaut: 4200
-```
+   ### Reset complet
+   ```bash
+   docker-compose down -v
+   docker-compose up -d
+   ```
 
-**Résultat:** Chaque machine peut avoir sa propre configuration sans modifier les fichiers Git!
+   ---
 
----
+   ## Troubleshooting
 
-## Cas d'usage avancés
+   ### Backend ne démarre pas
 
-### Changer les ports
+   ```bash
+   docker-compose logs backend
+   ```
 
-Éditer `.env`:
-```ini
-FRONTEND_PORT=3000
-BACKEND_PORT=9000
-POSTGRES_PORT=6432
-```
+   ### Images obsolètes
 
-```bash
-npm run docker:restart
-```
+   ```bash
+   docker-compose pull
+   docker-compose up -d
+   ```
 
-### Utiliser un backend ailleurs
+   ### Ports déjà utilisés
 
-Éditer `.env`:
-```ini
-BACKEND_PATH=/path/to/different/backend
-```
+   ```bash
+   lsof -i :8080
+   ```
 
-```bash
-npm run docker:restart
-```
+   ---
 
-### Multiple instances
+   ## Documentation associée
 
-Créer plusieurs `.env.*`:
-```bash
-.env.dev      # Pour développement
-.env.test     # Pour tests
-.env.prod     # Pour production
-```
+   - [SETUP.md](SETUP.md) - Guide installation complète
+   - [HELP.md](HELP.md) - Aide rapide
+   - [../README.md](../README.md) - Vue d'ensemble et démarrage
 
-Lancer avec le bon:
-```bash
-docker-compose --env-file .env.dev up -d
-```
+   ---
 
----
+   ## Résumé une ligne
 
-## Troubleshooting
+   **Exécutez `npm run setup` et tout fonctionne automatiquement**
 
-### "BACKEND_PATH not found"
+   ---
 
-```bash
-# Vérifier le chemin
-cat .env | grep BACKEND_PATH
-
-# Tester le chemin
-ls "C:/Users/Emili/OneDrive/Bureau/CDA/JAVA/TP/bibliotheque/Dockerfile"
-
-# Si absent, adapter dans .env
-```
-
-### "build context ... not found"
-
-Docker n'a pas pu trouver le chemin. Format problème?
-
-```bash
-# MAUVAIS - Backslashes
-BACKEND_PATH=C:\Users\Emili\OneDrive\...
-
-# BON - Slashes
-BACKEND_PATH=C:/Users/Emili/OneDrive/...
-```
-
----
-
-## Documentation associée
-
-- [SETUP.md](SETUP.md) - Guide installation complète
-- [HELP.md](HELP.md) - Aide rapide
-- [../README.md](../README.md) - Vue d'ensemble et démarrage
-
----
-
-## Résumé une ligne
-
-**Exécutez `npm run setup` et tout fonctionne automatiquement!**
-
----
-
-Version: 1.0  
-Date: 2025-01-15  
-Status: Configuration dynamique complète
+   Version: 1.0  
+   Date: 2026
+   Status: Configuration dynamique complète

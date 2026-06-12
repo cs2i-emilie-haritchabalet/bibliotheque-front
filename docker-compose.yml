@@ -14,24 +14,22 @@ services:
     restart: unless-stopped
 
   backend:
-    build:
-      context: ${BACKEND_PATH:-./../bibliotheque-back-java}
-      dockerfile: Dockerfile
+    image: bibliotheque-backend:latest
     container_name: bibliotheque-backend
     ports:
       - "${BACKEND_PORT:-8080}:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy  
-      mailpit:
-        condition: service_started
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/bibliotheque  
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/bibliotheque
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-postgres}
       - SPRING_MAIL_HOST=mailpit
       - SPRING_MAIL_PORT=1025
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-docker}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
     networks:
       - bibliotheque-network
     restart: unless-stopped
@@ -41,7 +39,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 60s
-
+      
   postgres:
     image: postgres:16-alpine
     container_name: bibliotheque-postgres

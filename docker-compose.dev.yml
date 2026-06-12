@@ -1,14 +1,12 @@
 services:
   # Backend Spring Boot (development)
   backend:
-    build:
-      context: ${BACKEND_PATH:-./../bibliotheque-back-java}
-      dockerfile: Dockerfile
+    image: bibliotheque-backend:latest
     container_name: bibliotheque-backend-dev
     ports:
       - "${BACKEND_PORT:-8080}:8080"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT:-5432}/bibliotheque
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/bibliotheque
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-postgres}
       - SPRING_MAIL_HOST=mailpit
@@ -19,8 +17,6 @@ services:
       - mailpit
     networks:
       - bibliotheque-network
-    volumes:
-      - ${BACKEND_PATH:-./../bibliotheque-back-java}:/app  # Hot reload
     restart: unless-stopped
 
   # PostgreSQL Database
